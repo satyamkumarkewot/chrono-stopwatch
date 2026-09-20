@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precision Stopwatch Timer</title>
+    <meta name="description" content="A high-precision, elegant responsive Stopwatch Timer application with Dark/Light mode support, lap splits, and keyboard shortcuts.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Top Header / Bar -->
+        <header class="app-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="13" r="8"></circle>
+                    <path d="M12 9v4l2 2"></path>
+                    <path d="M5 3L2 6"></path>
+                    <path d="M22 6l-3-3"></path>
+                    <path d="M12 2v2"></path>
+                </svg>
+                <span>CHRONO</span>
+            </div>
+            <div class="header-controls">
+                <button id="soundToggleBtn" class="icon-btn" aria-label="Toggle Sound Effects" title="Toggle Sound (M)">
+                    <svg class="sound-on-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                    <svg class="sound-off-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                        <path d="M9 9l-3 3H2v6h4l5 4V13"></path>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                </button>
+                <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle Dark and Light Mode" title="Toggle Theme (T)">
+                    <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Stopwatch Section -->
+        <main class="main-content">
+            <!-- Timer Card -->
+            <div class="timer-card glass-panel">
+                <!-- Circular Visual Progress Ring -->
+                <div class="timer-ring-container">
+                    <svg class="timer-ring" width="280" height="280" viewBox="0 0 280 280">
+                        <circle class="ring-bg" cx="140" cy="140" r="126" />
+                        <circle class="ring-progress" id="ringProgress" cx="140" cy="140" r="126" />
+                    </svg>
+                    
+                    <div class="timer-display-inner">
+                        <div class="time-readout" id="timeDisplay" aria-live="polite">
+                            <span class="hours-part" id="hours">00</span><span class="colon">:</span><span class="minutes-part" id="minutes">00</span><span class="colon">:</span><span class="seconds-part" id="seconds">00</span><span class="dot">.</span><span class="millis-part" id="milliseconds">00</span>
+                        </div>
+                        <div class="timer-status" id="timerStatus">READY</div>
+                    </div>
+                </div>
+
+                <!-- Main Action Buttons -->
+                <div class="controls-container">
+                    <button id="lapResetBtn" class="btn btn-secondary" disabled title="Lap (L) / Reset (R)">
+                        <span id="lapResetBtnLabel">Lap</span>
+                    </button>
+
+                    <button id="startPauseBtn" class="btn btn-primary" title="Start/Pause (Space)">
+                        <svg class="play-icon" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <svg class="pause-icon hidden" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                        <span id="startPauseBtnLabel">Start</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats & Lap Records -->
+            <div class="stats-laps-wrapper">
+                <!-- Quick Summary Stats Card -->
+                <div class="stats-card glass-panel">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Laps</span>
+                        <span class="stat-value" id="statTotalLaps">0</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">Fastest Lap</span>
+                        <span class="stat-value highlight-fast" id="statFastestLap">--:--.--</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-label">Average Lap</span>
+                        <span class="stat-value" id="statAvgLap">--:--.--</span>
+                    </div>
+                </div>
+
+                <!-- Laps History Table Card -->
+                <div class="laps-card glass-panel">
+                    <div class="laps-header">
+                        <h3>Lap History</h3>
+                        <button id="clearLapsBtn" class="text-btn hidden" title="Clear History">Clear</button>
+                    </div>
+                    
+                    <div class="laps-container" id="lapsContainer">
+                        <div class="empty-laps-state" id="emptyLapsState">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <p>No laps recorded yet.<br>Press <strong>Lap</strong> while running to split time.</p>
+                        </div>
+
+                        <table class="laps-table hidden" id="lapsTable">
+                            <thead>
+                                <tr>
+                                    <th>Lap #</th>
+                                    <th>Lap Time</th>
+                                    <th>Total Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lapsTableBody">
+                                <!-- Lap items dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Keyboard Shortcuts Footer -->
+        <footer class="app-footer">
+            <div class="shortcuts-hint">
+                <span><kbd>Space</kbd> Start/Pause</span>
+                <span><kbd>L</kbd> Lap</span>
+                <span><kbd>R</kbd> Reset</span>
+                <span><kbd>T</kbd> Theme</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
