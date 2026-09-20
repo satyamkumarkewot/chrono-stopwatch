@@ -71,7 +71,7 @@ This project helped me practice and implement:
  Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/chrono-stopwatch.git
+git clone https://github.com/satyamkumarkewot/chrono-stopwatch.git
 
 📁 Project Structure
 chrono-stopwatch/
